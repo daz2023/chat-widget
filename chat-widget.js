@@ -273,7 +273,7 @@
         }
 
         .n8n-chat-widget .typing-indicator {
-            padding: 12px 16px;
+            padding: 16px 20px;
             margin: 8px 0;
             border-radius: 12px;
             max-width: 80%;
@@ -284,21 +284,31 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
+            min-height: 50px;
+        }
+
+        .n8n-chat-widget .typing-text {
+            font-size: 14px;
+            color: var(--chat--color-font);
+            opacity: 0.7;
+            margin-right: 8px;
         }
 
         .n8n-chat-widget .typing-dots {
             display: flex;
-            gap: 2px;
+            gap: 4px;
+            align-items: center;
         }
 
         .n8n-chat-widget .typing-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background-color: var(--chat--color-primary);
-            opacity: 0.4;
+            opacity: 0.3;
             animation: typing-bounce 1.4s infinite ease-in-out;
+            will-change: transform, opacity;
         }
 
         .n8n-chat-widget .typing-dot:nth-child(1) {
@@ -315,13 +325,19 @@
 
         @keyframes typing-bounce {
             0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.4;
+                transform: translateY(0px) scale(0.8);
+                opacity: 0.3;
             }
             40% {
-                transform: scale(1);
+                transform: translateY(-8px) scale(1.2);
                 opacity: 1;
             }
+        }
+
+        /* Lottie typing indicator alternative */
+        .n8n-chat-widget .typing-lottie {
+            width: 40px;
+            height: 20px;
         }
 
         /* Markdown Styles */
@@ -454,7 +470,33 @@
     // Load marked.js for markdown parsing
     const markedScript = document.createElement('script');
     markedScript.src = 'https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js';
+    markedScript.onload = function() {
+        console.log('Marked.js loaded successfully');
+        // Configure marked options when it loads
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false,
+                smartypants: true
+            });
+        }
+    };
+    markedScript.onerror = function() {
+        console.error('Failed to load marked.js');
+    };
     document.head.appendChild(markedScript);
+
+    // Load Lottie.js for animations (optional)
+    const lottieScript = document.createElement('script');
+    lottieScript.src = 'https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js';
+    lottieScript.onload = function() {
+        console.log('Lottie.js loaded successfully');
+    };
+    lottieScript.onerror = function() {
+        console.log('Lottie.js failed to load, using CSS animation fallback');
+    };
+    document.head.appendChild(lottieScript);
 
     // Inject styles
     const styleSheet = document.createElement('style');
@@ -484,6 +526,11 @@
             position: 'right',
             backgroundColor: '#ffffff',
             fontColor: '#333333'
+        },
+        typingIndicator: {
+            enabled: true,
+            style: 'dots', // 'dots', 'lottie', or 'pulse'
+            text: 'Typing'
         }
     };
 
@@ -492,7 +539,8 @@
         {
             webhook: { ...defaultConfig.webhook, ...window.ChatWidgetConfig.webhook },
             branding: { ...defaultConfig.branding, ...window.ChatWidgetConfig.branding },
-            style: { ...defaultConfig.style, ...window.ChatWidgetConfig.style }
+            style: { ...defaultConfig.style, ...window.ChatWidgetConfig.style },
+            typingIndicator: { ...defaultConfig.typingIndicator, ...window.ChatWidgetConfig.typingIndicator }
         } : defaultConfig;
 
     // Prevent multiple initializations
@@ -574,6 +622,11 @@
     }
 
     function showTypingIndicator() {
+        // Check if typing indicator is enabled
+        if (!config.typingIndicator.enabled) {
+            return null;
+        }
+
         // Remove any existing typing indicator
         const existingIndicator = messagesContainer.querySelector('.typing-indicator');
         if (existingIndicator) {
@@ -582,13 +635,104 @@
 
         const typingDiv = document.createElement('div');
         typingDiv.className = 'typing-indicator';
-        typingDiv.innerHTML = `
-            <div class="typing-dots">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        `;
+        
+        const typingText = config.typingIndicator.text || 'Typing';
+        
+        // Choose animation style based on config
+        if (config.typingIndicator.style === 'lottie' && typeof lottie !== 'undefined') {
+            // Lottie typing animation
+            const lottieId = 'lottie-typing-' + Date.now();
+            typingDiv.innerHTML = `
+                <span class="typing-text">${typingText}</span>
+                <div class="typing-lottie" id="${lottieId}"></div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            
+            // Load Lottie typing animation with a simple dots animation
+            try {
+                lottie.loadAnimation({
+                    container: document.getElementById(lottieId),
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    animationData: {
+                        "v": "5.7.4",
+                        "fr": 30,
+                        "ip": 0,
+                        "op": 90,
+                        "w": 120,
+                        "h": 40,
+                        "nm": "typing-dots",
+                        "ddd": 0,
+                        "assets": [],
+                        "layers": [
+                            {
+                                "ddd": 0,
+                                "ind": 1,
+                                "ty": 4,
+                                "nm": "dot1",
+                                "sr": 1,
+                                "ks": {
+                                    "o": {"a": 0, "k": 100},
+                                    "r": {"a": 0, "k": 0},
+                                    "p": {"a": 1, "k": [
+                                        {"i": {"x": 0.667, "y": 1}, "o": {"x": 0.333, "y": 0}, "t": 0, "s": [30, 20, 0]},
+                                        {"i": {"x": 0.667, "y": 1}, "o": {"x": 0.333, "y": 0}, "t": 15, "s": [30, 10, 0]},
+                                        {"i": {"x": 0.667, "y": 1}, "o": {"x": 0.333, "y": 0}, "t": 30, "s": [30, 20, 0]},
+                                        {"t": 90, "s": [30, 20, 0]}
+                                    ]},
+                                    "a": {"a": 0, "k": [0, 0, 0]},
+                                    "s": {"a": 0, "k": [100, 100, 100]}
+                                },
+                                "ao": 0,
+                                "shapes": [
+                                    {
+                                        "ty": "el",
+                                        "p": {"a": 0, "k": [0, 0]},
+                                        "s": {"a": 0, "k": [8, 8]},
+                                        "nm": "circle"
+                                    },
+                                    {
+                                        "ty": "fl",
+                                        "c": {"a": 0, "k": [0.522, 0.31, 1, 1]},
+                                        "o": {"a": 0, "k": 100},
+                                        "r": 1,
+                                        "bm": 0,
+                                        "nm": "fill"
+                                    }
+                                ],
+                                "ip": 0,
+                                "op": 90,
+                                "st": 0,
+                                "bm": 0
+                            }
+                        ]
+                    }
+                });
+            } catch (error) {
+                console.log('Lottie animation failed, using CSS fallback');
+                // Fallback to CSS animation
+                typingDiv.innerHTML = `
+                    <span class="typing-text">${typingText}</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                `;
+            }
+        } else {
+            // CSS animation (default)
+            typingDiv.innerHTML = `
+                <span class="typing-text">${typingText}</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+        }
+        
         messagesContainer.appendChild(typingDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
         return typingDiv;
@@ -602,25 +746,46 @@
     }
 
     function renderMarkdown(text) {
-        // Wait for marked.js to load if it hasn't already
+        // Check if marked.js is available
         if (typeof marked === 'undefined') {
-            // Fallback to plain text if marked.js isn't loaded yet
-            return text;
+            console.warn('Marked.js not available, using formatted plain text');
+            // Return formatted plain text with line breaks
+            return text.replace(/\n/g, '<br>');
         }
         
         try {
-            // Configure marked for safe rendering
-            marked.setOptions({
-                breaks: true,
-                gfm: true,
-                sanitize: false,
-                smartypants: true
-            });
-            
+            // Parse markdown
+            const htmlContent = marked.parse(text);
+            console.log('Markdown parsed successfully');
+            return htmlContent;
+        } catch (error) {
+            console.warn('Markdown parsing failed, using formatted plain text:', error);
+            // Return formatted plain text with line breaks as fallback
+            return text.replace(/\n/g, '<br>');
+        }
+    }
+
+    // Alternative rendering function that waits for marked.js to load
+    async function renderMarkdownAsync(text) {
+        // Wait for marked.js to be available (with timeout)
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        while (typeof marked === 'undefined' && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        if (typeof marked === 'undefined') {
+            console.warn('Marked.js still not available after waiting, using formatted plain text');
+            return text.replace(/\n/g, '<br>');
+        }
+        
+        try {
             return marked.parse(text);
         } catch (error) {
-            console.warn('Markdown parsing failed, using plain text:', error);
-            return text;
+            console.warn('Markdown parsing failed, using formatted plain text:', error);
+            return text.replace(/\n/g, '<br>');
         }
     }
 
@@ -660,7 +825,12 @@
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
             const messageText = Array.isArray(responseData) ? responseData[0].output : responseData.output;
-            botMessageDiv.innerHTML = renderMarkdown(messageText);
+            
+            // Use async markdown rendering to wait for library to load
+            renderMarkdownAsync(messageText).then(htmlContent => {
+                botMessageDiv.innerHTML = htmlContent;
+            });
+            
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
@@ -708,7 +878,12 @@
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
             const messageText = Array.isArray(data) ? data[0].output : data.output;
-            botMessageDiv.innerHTML = renderMarkdown(messageText);
+            
+            // Use async markdown rendering to wait for library to load
+            renderMarkdownAsync(messageText).then(htmlContent => {
+                botMessageDiv.innerHTML = htmlContent;
+            });
+            
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
