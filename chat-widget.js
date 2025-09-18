@@ -271,6 +271,178 @@
         .n8n-chat-widget .chat-footer a:hover {
             opacity: 1;
         }
+
+        .n8n-chat-widget .typing-indicator {
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 12px;
+            max-width: 80%;
+            background: var(--chat--color-background);
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            color: var(--chat--color-font);
+            align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .n8n-chat-widget .typing-dots {
+            display: flex;
+            gap: 2px;
+        }
+
+        .n8n-chat-widget .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--chat--color-primary);
+            opacity: 0.4;
+            animation: typing-bounce 1.4s infinite ease-in-out;
+        }
+
+        .n8n-chat-widget .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .n8n-chat-widget .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        .n8n-chat-widget .typing-dot:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+        @keyframes typing-bounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.4;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Markdown Styles */
+        .n8n-chat-widget .chat-message.bot h1,
+        .n8n-chat-widget .chat-message.bot h2,
+        .n8n-chat-widget .chat-message.bot h3,
+        .n8n-chat-widget .chat-message.bot h4,
+        .n8n-chat-widget .chat-message.bot h5,
+        .n8n-chat-widget .chat-message.bot h6 {
+            margin: 16px 0 8px 0;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--chat--color-font);
+        }
+
+        .n8n-chat-widget .chat-message.bot h1 { font-size: 1.5em; }
+        .n8n-chat-widget .chat-message.bot h2 { font-size: 1.3em; }
+        .n8n-chat-widget .chat-message.bot h3 { font-size: 1.1em; }
+        .n8n-chat-widget .chat-message.bot h4 { font-size: 1em; }
+        .n8n-chat-widget .chat-message.bot h5 { font-size: 0.9em; }
+        .n8n-chat-widget .chat-message.bot h6 { font-size: 0.8em; }
+
+        .n8n-chat-widget .chat-message.bot p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .n8n-chat-widget .chat-message.bot ul,
+        .n8n-chat-widget .chat-message.bot ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .n8n-chat-widget .chat-message.bot li {
+            margin: 4px 0;
+            line-height: 1.4;
+        }
+
+        .n8n-chat-widget .chat-message.bot code {
+            background: rgba(133, 79, 255, 0.1);
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: var(--chat--color-font);
+        }
+
+        .n8n-chat-widget .chat-message.bot pre {
+            background: rgba(133, 79, 255, 0.05);
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .n8n-chat-widget .chat-message.bot pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: inherit;
+        }
+
+        .n8n-chat-widget .chat-message.bot blockquote {
+            border-left: 3px solid var(--chat--color-primary);
+            margin: 8px 0;
+            padding: 8px 0 8px 12px;
+            background: rgba(133, 79, 255, 0.05);
+            font-style: italic;
+            color: var(--chat--color-font);
+            opacity: 0.9;
+        }
+
+        .n8n-chat-widget .chat-message.bot a {
+            color: var(--chat--color-primary);
+            text-decoration: underline;
+            transition: opacity 0.2s;
+        }
+
+        .n8n-chat-widget .chat-message.bot a:hover {
+            opacity: 0.8;
+        }
+
+        .n8n-chat-widget .chat-message.bot strong,
+        .n8n-chat-widget .chat-message.bot b {
+            font-weight: 600;
+        }
+
+        .n8n-chat-widget .chat-message.bot em,
+        .n8n-chat-widget .chat-message.bot i {
+            font-style: italic;
+        }
+
+        .n8n-chat-widget .chat-message.bot hr {
+            border: none;
+            border-top: 1px solid rgba(133, 79, 255, 0.2);
+            margin: 16px 0;
+        }
+
+        .n8n-chat-widget .chat-message.bot table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .n8n-chat-widget .chat-message.bot th,
+        .n8n-chat-widget .chat-message.bot td {
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .n8n-chat-widget .chat-message.bot th {
+            background: rgba(133, 79, 255, 0.1);
+            font-weight: 600;
+        }
     `;
 
     // Load Geist font
@@ -278,6 +450,11 @@
     fontLink.rel = 'stylesheet';
     fontLink.href = 'https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css';
     document.head.appendChild(fontLink);
+
+    // Load marked.js for markdown parsing
+    const markedScript = document.createElement('script');
+    markedScript.src = 'https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js';
+    document.head.appendChild(markedScript);
 
     // Inject styles
     const styleSheet = document.createElement('style');
@@ -396,6 +573,57 @@
         return crypto.randomUUID();
     }
 
+    function showTypingIndicator() {
+        // Remove any existing typing indicator
+        const existingIndicator = messagesContainer.querySelector('.typing-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing-indicator';
+        typingDiv.innerHTML = `
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return typingDiv;
+    }
+
+    function hideTypingIndicator() {
+        const typingIndicator = messagesContainer.querySelector('.typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    function renderMarkdown(text) {
+        // Wait for marked.js to load if it hasn't already
+        if (typeof marked === 'undefined') {
+            // Fallback to plain text if marked.js isn't loaded yet
+            return text;
+        }
+        
+        try {
+            // Configure marked for safe rendering
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false,
+                smartypants: true
+            });
+            
+            return marked.parse(text);
+        } catch (error) {
+            console.warn('Markdown parsing failed, using plain text:', error);
+            return text;
+        }
+    }
+
     async function startNewConversation() {
         currentSessionId = generateUUID();
         const data = [{
@@ -407,6 +635,14 @@
             }
         }];
 
+        // Show the chat interface first
+        chatContainer.querySelector('.brand-header').style.display = 'none';
+        chatContainer.querySelector('.new-conversation').style.display = 'none';
+        chatInterface.classList.add('active');
+
+        // Show typing indicator
+        showTypingIndicator();
+
         try {
             const response = await fetch(config.webhook.url, {
                 method: 'POST',
@@ -417,17 +653,20 @@
             });
 
             const responseData = await response.json();
-            chatContainer.querySelector('.brand-header').style.display = 'none';
-            chatContainer.querySelector('.new-conversation').style.display = 'none';
-            chatInterface.classList.add('active');
+            
+            // Hide typing indicator
+            hideTypingIndicator();
 
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
-            botMessageDiv.textContent = Array.isArray(responseData) ? responseData[0].output : responseData.output;
+            const messageText = Array.isArray(responseData) ? responseData[0].output : responseData.output;
+            botMessageDiv.innerHTML = renderMarkdown(messageText);
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
             console.error('Error:', error);
+            // Hide typing indicator on error
+            hideTypingIndicator();
         }
     }
 
@@ -442,11 +681,15 @@
             }
         };
 
+        // Add user message
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'chat-message user';
         userMessageDiv.textContent = message;
         messagesContainer.appendChild(userMessageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Show typing indicator
+        showTypingIndicator();
 
         try {
             const response = await fetch(config.webhook.url, {
@@ -459,13 +702,19 @@
             
             const data = await response.json();
             
+            // Hide typing indicator
+            hideTypingIndicator();
+            
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
-            botMessageDiv.textContent = Array.isArray(data) ? data[0].output : data.output;
+            const messageText = Array.isArray(data) ? data[0].output : data.output;
+            botMessageDiv.innerHTML = renderMarkdown(messageText);
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
             console.error('Error:', error);
+            // Hide typing indicator on error
+            hideTypingIndicator();
         }
     }
 
